@@ -69,5 +69,7 @@ done
 chmod +x $HOOKS_DIR/hooks
 
 echo "Hooks installed in $HOOKS_DIR !"
+echo "Ensure to load the hooks from the "postCreateCommand" script"
+echo "sh -c '. ./hooks'"
 echo ""
 echo "Run 'dch-server' to start the server"
