@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# * Open
+hook_open() {
+  arg_path="$1"
+
+  # ! params are ignored
+  exec_hook open path="$arg_path"
+}
+alias open="hook_open"

@@ -1,0 +1,73 @@
+#!/bin/sh
+
+read -erp "Define the port where the server should run [3000] " HOST_PORT
+HOST_PORT=${HOST_PORT:-3000}
+
+SERVER_ENV_PREFIX="DCH_SERVER"
+SERVER_ENV_PATH=".env"
+
+echo "${SERVER_ENV_PREFIX}_PORT=$HOST_PORT" > $SERVER_ENV_PATH
+
+read -erp "Repo directory where the .devcontainer folder is located " WORKSPACE_DIR
+
+WORKSPACE_DIR="${WORKSPACE_DIR/#\~/$HOME}"
+if [ ! -d $WORKSPACE_DIR ]; then
+  echo "Error: directory $WORKSPACE_DIR not found" >&2
+  exit 1
+fi
+
+HOOKS_DIR=${WORKSPACE_DIR%%/}/.devcontainer
+if [ ! -d $HOOKS_DIR ]; then
+  echo "Error: directory $HOOKS_DIR not found" >&2
+  exit 1
+fi
+
+echo "Generating hooks.env.sample..."
+
+cp hooks.env.sample $HOOKS_DIR/hooks.env.sample
+for dir in lib/*
+do
+  if [ -d "$dir" ]; then
+    for file in "$dir"/env.sample
+    do
+      if [ -f "$file" ]; then
+        cat "$file" >> $HOOKS_DIR/hooks.env.sample
+      fi
+    done
+  fi
+done
+
+if [ -f $HOOKS_DIR/hooks.env ]; then
+  echo "Found existing hooks.env file"
+  HOOKS_ENV=$(cat $HOOKS_DIR/hooks.env)
+else
+  echo "Generating new hooks.env file"
+  HOOKS_ENV=$(cat $HOOKS_DIR/hooks.env.sample)
+fi
+
+echo "$HOOKS_ENV" \
+| sed "s@HOST_IP=.*@HOST_IP=$(ipconfig getifaddr en0)@g" \
+| sed "s@HOST_PORT=.*@HOST_PORT=$HOST_PORT@g" \
+| sed "s@LOCAL_WORKSPACE_DIR=.*@LOCAL_WORKSPACE_DIR=$WORKSPACE_DIR@g" \
+> $HOOKS_DIR/hooks.env
+
+echo "Installing hooks..."
+
+cp hooks $HOOKS_DIR/hooks
+for dir in lib/*
+do
+  if [ -d "$dir" ]; then
+    for file in "$dir"/hook
+    do
+      if [ -f "$file" ]; then
+        cat "$file" >> $HOOKS_DIR/hooks
+      fi
+    done
+  fi
+done
+
+chmod +x $HOOKS_DIR/hooks
+
+echo "Hooks installed in $HOOKS_DIR !"
+echo ""
+echo "Run 'dch-server' to start the server"

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# * Git GUI
+hook_git_gui() {
+  arg_args="$GIT_GUI_ARGS"
+  arg_app="${GIT_GUI:-stree}"
+
+  exec_hook git-gui args="$GIT_GUI_ARGS" app="$arg_app"
+}
+GIT_GUI_ALIAS=${GIT_GUI_ALIAS:-git-gui}
+alias $GIT_GUI_ALIAS="hook_git_gui"

@@ -1,0 +1,32 @@
+{
+  "name": "dev-container-hooks",
+  "version": "1.0.0",
+  "description": "Run local resources from within a dev container",
+  "main": "lib/server.js",
+  "bin": {
+    "dch-server": "./cli.js",
+    "dev-container-hooks-server": "./cli.js"
+  },
+  "scripts": {
+    "start": "node ./cli.js",
+    "install:hooks": "sh -c './install-hooks'",
+    "install:bins": "sh -c './install-bins'",
+    "global:install": "npm install -g .",
+    "global:update": "npm rm -g dev-container-hooks && npm install -g ."
+  },
+  "author": "Matteo Zambon<matteo@yeeti.co>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matteozambon89/dev-container-hooks.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^12.0.1",
+    "dotenv": "^16.4.5",
+    "koa": "^2.15.3",
+    "yargs": "^17.7.2"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

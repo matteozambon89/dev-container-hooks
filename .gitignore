@@ -1,0 +1,7 @@
+# Env Vars
+.env
+hooks.env
+lib/**/env
+
+# Node
+node_modules

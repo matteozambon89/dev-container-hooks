@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -e
+
+# Ensure the hooks.env file exists
+if [ ! -f hooks.env ]; then
+  echo "Error: hooks.env file not found" >&2
+  exit 1
+fi
+
+# Load the environment variables from the hooks.env file
+set -o allexport
+. ./hooks.env
+set +o allexport
+
+local_working_dir() {
+  echo $(echo "$PWD" | sed "s#$WORKSPACE_DIR#$LOCAL_WORKSPACE_DIR#")
+}
+
+exec_hook() {
+  command=$1
+  shift
+  params=$@
+
+  params=$(echo "$params" | tr " " "&")
+
+  LOCAL_WORKING_DIR=$(local_working_dir)
+
+  hook_url="http://$HOST_IP:$HOST_PORT/$command?cwd=$LOCAL_WORKING_DIR&workspace=$LOCAL_WORKSPACE_DIR&$params"
+
+  curl -sS -o /dev/null "$hook_url"
+}
+
+# ! all hooks available in the lib folder will be added on hooks install

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+BIN_NAMES=$(cat package.json | jq -r '.bin | keys[]')
+
+for BIN_NAME in $BIN_NAMES
+do
+  BIN_PATH=$(which $BIN_NAME)
+
+  echo "Registering $BIN_NAME as $BIN_PATH ..."
+  ln -s "$BIN_PATH" /usr/local/bin
+done
+
+echo "Done"
