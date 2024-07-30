@@ -24,19 +24,13 @@ Finally install the hooks to the repository where the DevContainer is used (usua
 npm run install:hooks
 ```
 
-Ensure to load the `hooks` script in the `postCreateCommand` section of the `devcontainer.json` file
+Ensure add the hooks loaded `. ./.devcontainer/hooks` script in the zsh or bash config file.
 
-```json
-{
-  "postCreateCommand": "sh -c '. ./hooks'"
-}
-```
-
-In case you have already a script in the `postCreateCommand`, ensure the script loads the `hooks` script
-
-```sh
-. ./hooks
-```
+> For example, in your `postCreateCommand` hook you can do the following
+>
+> ```sh
+> sh -c 'echo ". ./.devcontainer/hooks" >> /home/vscode/.zshrc'
+> ```
 
 If you want to install the server binary in the system you can use the following commands
 

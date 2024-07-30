@@ -2,18 +2,24 @@
 
 set -e
 
+if [[ $PWD == *".devcontainer"* ]]; then
+  WORKSPACE_DIR=$(dirname $PWD)
+else
+  WORKSPACE_DIR=$PWD
+fi
+
+HOOKS_ENV="$WORKSPACE_DIR/.devcontainer/hooks.env"
+
 # Ensure the hooks.env file exists
-if [ ! -f hooks.env ]; then
+if [ ! -f $HOOKS_ENV ]; then
   echo "Error: hooks.env file not found" >&2
   exit 1
 fi
 
 # Load the environment variables from the hooks.env file
 set -o allexport
-. ./hooks.env
+. $HOOKS_ENV
 set +o allexport
-
-WORKSPACE_DIR=${WORKSPACE_DIR:-$(dirname "$PWD")}
 
 local_working_dir() {
   echo $(echo "$PWD" | sed "s#$WORKSPACE_DIR#$LOCAL_WORKSPACE_DIR#")
@@ -30,7 +36,7 @@ exec_hook() {
 
   hook_url="http://$HOST_IP:$HOST_PORT/$command?cwd=$LOCAL_WORKING_DIR&workspace=$LOCAL_WORKSPACE_DIR&$params"
 
-  curl -sS -o /dev/null "$hook_url"
+  curl -sS -o /dev/null "$hook_url" || true
 }
 
 # ! all hooks available in the lib folder will be added on hooks install
