@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # * Open
 hook_open() {
   arg_path="$1"

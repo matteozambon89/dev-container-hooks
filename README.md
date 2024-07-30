@@ -164,13 +164,9 @@ In case the handler should fail, you can throw a JavaScript error `throw new Err
 
 The `hook` script is the actual hook that you want to execute in the DevContainer. This script is composed as follows.
 
-The hook script should be executable with `sh`
+> The hook script should no be executable nor containing any shebang
 
-```plain
-#!/bin/sh
-```
-
-The the script should contain a function prefixed with `hook`
+The script should contain a function prefixed with `hook`
 
 ```sh
 # * Your hook name/description
@@ -215,8 +211,6 @@ alias my_hook="hook_my_hook"
 The final script should look like
 
 ```sh
-#!/bin/sh
-
 # * Your hook name/description
 hook_my_hook() {
   arg_1=$1

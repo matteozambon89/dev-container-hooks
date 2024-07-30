@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # * Git GUI
 hook_git_gui() {
   arg_args="$GIT_GUI_ARGS"
